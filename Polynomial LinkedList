@@ -1,0 +1,128 @@
+ public static void main(String[] args) {
+        Scanner scn=new Scanner(System.in);
+        MyLinkedList myList=new MyLinkedList();
+        MyLinkedList myList_2=new MyLinkedList();
+        System.out.println("Enter the coefficient and power of the first polynomial. Type 0 at the end:");
+        while(true){
+           
+            int data=scn.nextInt();
+            if(data==0)
+                break;
+            int power=scn.nextInt(); 
+            myList.insertSorted(data, power);
+        }
+        System.out.println("Enter the coefficient and power of the second polynomial. Type 0 at the end:");
+         
+         while(true){
+            
+            int data=scn.nextInt();
+            if(data==0)
+                break;
+            int power=scn.nextInt(); 
+            myList_2.insertSorted(data, power);
+        }
+         System.out.println(myList.toString());
+         System.out.println(myList_2.toString());
+         while(true){
+         System.out.println("Which task you want to do?\n" +
+"1- Add\n" +
+"2- Multiply\n" +
+"3- Print\n" +
+"4- Delete\n" +
+"5- exit\n" +
+"Please enter a digit (1-5):");
+         int selection=scn.nextInt();
+         switch(selection){
+             case 1: MyLinkedList result=new MyLinkedList();
+                 System.out.println(add(myList.first,myList_2.first,result));
+            break;
+             case 2: System.out.println(Multiply(myList,myList_2));
+             break;
+             case 3:System.out.println(myList.toString()+"\n"+ myList_2.toString());
+             break;
+             case 4:System.out.println("Which power you want to be delated from both polynomials:");
+             int p=scn.nextInt();
+             delet(myList,myList_2,p);
+                 System.out.println("The elements having this power has been delated.");
+             break;
+             case 5: System.exit(0);
+             break;
+         }
+    }
+    }
+    
+      public static MyLinkedList add(Node m,Node  m2, MyLinkedList result){
+      if(m==null ){
+          return null;
+      }
+
+      else if(m2==null){
+          return null;
+      }
+      
+      if(m.power== m2.power){
+          result.insertSorted((m.data+m2.data), m.power);
+          add(m.next,m2.next,result);
+      }
+      
+      else if(m.power>m2.power){
+          result.insertSorted(m.data,m.power);
+          add(m.next,m2,result);   
+      } 
+      else if(m.power<m2.power){
+          result.insertSorted(m2.data,m2.power);
+          add(m,m2.next,result);
+      }
+      
+        return result;
+
+      }
+         
+      public static MyLinkedList Multiply(MyLinkedList m1,MyLinkedList m2){
+        MyLinkedList result=new MyLinkedList();
+        Node tmp=m1.first;
+        Node tmp2=m2.first;
+        while(tmp!=null){
+            while(tmp2!=null){
+                int newData=(tmp.data*tmp2.data);
+                int newPower=(tmp.power+tmp2.power);
+                result.insertLast(newData,newPower);
+                tmp2=tmp2.next; 
+            }
+            tmp=tmp.next;
+            tmp2=m2.first;
+        }
+        return result;
+        
+      }
+      
+      public static void delet(MyLinkedList m1,MyLinkedList m2,int p){
+        Node tmp=m1.first;
+        Node tmp2=m2.first;
+        while(tmp!=null){
+            if(tmp.power==p && tmp==m1.first){
+                 m1.removeFirst();
+            }
+            else if(tmp.power==p){
+               tmp.next.prev=tmp.prev;
+               tmp.prev.next=tmp.next;
+            }
+            
+            tmp=tmp.next;
+        }
+        
+         while(tmp2!=null){
+             if(tmp2.power==p && tmp2==m2.first){
+                 m2.removeFirst();
+             }
+             else if(tmp2.power==p){
+               tmp2.next.prev=tmp2.prev;
+               tmp2.prev.next=tmp2.next;
+            }
+            tmp2=tmp2.next;
+        }
+        
+      }
+    
+    
+}
