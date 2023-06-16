@@ -1,0 +1,175 @@
+public class Test {
+
+   
+    public static void main(String[] args) {
+          int x=0;
+        Stack newStack= new Stack(x);
+       Scanner scn=new Scanner(System.in);
+       while(true){
+          System.out.println("Which task you want to do?\n" +
+"1- push\n" +
+"2- pop\n" +
+"3- Print\n" +
+"4- Delete middle\n" +
+"5- isPalindrome\n" +
+"6- exit\n" +
+"Please enter a digit (1-5)");
+          int digit=scn.nextInt();
+          switch(digit){
+              case 1:System.out.println("How many pushes you want to do?");
+              int number=scn.nextInt();
+              if(newStack.isEmpty()){
+                  newStack.setSize(number);
+              }
+              else{
+                      newStack.resize(newStack.getSize()+number);
+                      }
+                  System.out.println("Enter "+number+" strings:");
+              while(true){
+                  String s=scn.next();
+                  newStack.push(s);
+                  number--;
+                   if(number==0){
+                      break;
+              }
+              }
+                  break;
+                  
+              case 2: String s=newStack.pop();
+                  System.out.println(s);
+                  break;
+                  
+              case 3:System.out.println("The content of stack is:");
+                  newStack.printStack(newStack);
+                  break;
+                  
+              case 4:
+                  if(newStack.deletMiddle(newStack)!=null){
+                      System.out.println("The middle element has been deleted");
+                  }else{
+                  System.out.println("There is no middle element as the size of stack is even.");
+                  }
+                  break;
+                  
+              case 5: System.out.println(newStack.isPolindrome(newStack));
+                  break;
+                  
+              case 6: System.out.println("Exiting...");
+              System.exit(0);
+              break;
+                  
+          }
+    }
+    }
+    }
+    
+package datastructureproject;
+
+
+public class Stack {
+    String data[];
+    int top;
+
+    public Stack(int n) {
+        data=new String[n];
+        top=-1;
+    }
+    public int getSize(){
+        return data.length;
+    }
+    public void setSize(int index){
+        data=new String[index];
+    }
+    
+    public void push(String element){
+        if(!isFull()){
+            top++;
+            data[top]=element;
+        }else{
+           resize((data.length));
+            push(element);
+        }
+    }
+    public boolean isFull(){
+        if(top==data.length-1){
+            return true;
+        }
+        return false;
+    }
+    public String pop(){
+        if(isEmpty()){
+            throw new java.util.NoSuchElementException();
+        }else{
+            top--;
+            return data[top+1];
+        }
+    }
+    public boolean isEmpty(){
+        if(top==-1){
+            return true;
+        }
+        return false;
+    }
+    
+    public void printStack(Stack stack){
+        if(stack.isEmpty()){
+            return;
+        }
+        String x=stack.peek();
+        stack.pop();
+        printStack(stack);
+        System.out.println(x+ " ");
+        stack.push(x);
+    }
+    
+    public String peek(){
+        if(!isEmpty()){
+            return data[top];
+        }else{
+            System.exit(0);
+        }
+        return null;
+    }
+    public String isPolindrome(Stack stack){
+        Stack reverseStack=new Stack(stack.getSize());
+        Stack tmp=new Stack(stack.getSize());
+        tmp=stack;
+        while(!tmp.isEmpty()){
+            reverseStack.push(tmp.pop());
+        }for(int i=0;i<stack.getSize();i++){
+            if(data[i].equals(reverseStack.data[i])){
+               return "It is a polindrome"; 
+            }else{
+            return "It is not a polindrome";
+        }
+        }
+        return null;
+
+    }
+    public Stack deletMiddle(Stack s){
+        Stack tmp=new Stack((s.getSize()/2));
+        if(tmp.getSize()%2!=0){
+          while(!tmp.isFull()){
+              tmp.push(s.pop()); 
+          }
+            System.out.println(s.pop());
+            
+            while(!tmp.isEmpty()){
+            s.push(tmp.pop());
+            }
+            
+           return s;
+        }
+        else{
+            return null;
+        }
+        
+    }
+    public void resize(int newSize){
+      String[] arr=new String[this.data.length+newSize];
+      for(int i=0 ;i<data.length;i++){
+          arr[i]=this.data[i];
+      }
+      this.data=arr;
+    }
+}
