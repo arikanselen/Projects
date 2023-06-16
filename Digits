@@ -1,0 +1,224 @@
+package digitis;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Scanner;
+
+
+/**
+ *
+ * @author Monster
+ */
+public class Digitis {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        Scanner scn= new Scanner(System.in);
+        System.out.println("Digits Library Menu: \n" +
+"1. Least significant digit   \n" +
+"2. ith digit\n" +
+"3. Sum of digits \n" +
+"4. Count digits \n" +
+"5. Remove digitK \n" +
+"6. Remove digit with value \n" +
+"7. Generate random number \n" +
+"8. Reverse digits \n" +
+"9. Check palindrome \n" +
+"10. CharDigitSum\n" +
+"11. Quit ");
+        int x= scn.nextInt();
+        if(x==1){
+        System.out.println("Enter the number to least significant digit=");
+        int n= scn.nextInt();
+        digitZero(n);
+    }
+
+        if(x==2){
+            System.out.println("Enter a number=");
+            int n= scn.nextInt();
+            System.out.println("Enter a digit of wanted=");
+            int i=scn.nextInt();
+            digitAt(n,i);
+        }
+
+        if(x==3){
+            System.out.print("Enter a number=");
+            int n= scn.nextInt();
+            System.out.print("Enter an integer=");
+            int i=scn.nextInt();
+            System.out.println(digitSumLargerThan(n,i));
+        }
+
+        if(x==4){
+            System.out.print("Enter a number and i variable=");
+            int n= scn.nextInt();
+            int i= scn.nextInt();
+            System.out.println(digitCount(n,i));
+        }
+
+        if(x==5){
+            System.out.print("Enter a number=");
+            int n= scn.nextInt();
+            System.out.print("Which digit to remove=");
+            int i= scn.nextInt();
+            System.out.println(digitRemoveAt(n,i));
+        }
+
+        if(x==6){
+            System.out.println("Enter a number=");
+            int n=scn.nextInt();
+            System.out.print("Enter an integer which you want to remove=");
+            int i= scn.nextInt();
+            System.out.println(digitRemoveAll(n,i));
+        }
+        if(x==7){
+            System.out.print("Enter an value of digtis=");
+            int k= scn.nextInt();
+            System.out.println(randomNumber(k));
+        }
+        if(x==8){
+
+            System.out.print("Enter a number which will be reversed=");
+            int n= scn.nextInt();
+            System.out.print("Reversed number"+Arrays.toString(reverse(n)));
+        }
+
+        if(x==9){
+            System.out.print("Enter the number to check=");
+            int n=scn.nextInt();
+            isPalindrome(n);
+        }
+
+        if(x==10){
+            String str="hello";
+            System.out.println(charDigitSum(str));
+        }
+
+        if(x==11){
+            System.out.print("Quit");
+        }
+    }
+
+    public static int digitZero(int n){
+        return n%10;
+    }
+
+    public static int digitAt(int n, int i){ //i th digit of n
+        int answer =(int) Math.pow(10,(i-1));
+        System.out.println((n/answer)%10);
+        return (n/answer)%10;
+    }
+
+    public static int digitSumLargerThan (int n, int i){
+        int count=0,sum=0;
+        int temp=n;
+        while(temp>0){
+            temp/=10;
+            count++;}
+
+        int[] digits= new int[count];
+          for(int c=0;c<=digits.length-1;c++){
+             digits[c]=(n/(int) Math.pow(10,c))%10;
+             if(i<digits[c]){
+                 sum+=digits[c];
+             }
+          }
+
+     return sum;
+    }
+
+    public static int digitCount(int n,int i){
+        int count=0,sum=0;
+        int temp=n;
+        while(temp>0){
+            temp/=10;
+            count++;
+        }
+        int[] digits= new int[count];
+          for(int c=0;c<digits.length;c++){
+             digits[c]=(n/(int) Math.pow(10,c))%10;
+          }
+          for(int j=0;j<=digits.length-1;j++){
+              if(i==digits[j]){
+                  sum++;
+              }
+          }
+     return sum;
+    }
+
+    public static String  digitRemoveAt(int n, int i){ // I will convert number to string from start and than end after that I will sum them.
+
+        String new_n= Integer.toString(n);
+        String new_E1n= new_n.substring(0, new_n.length()-i-1);
+        String new_E2n= new_n.substring(new_n.length()-i,new_n.length());
+        String n1= new_E1n+new_E2n;
+        return n1;
+    }
+
+    public static String digitRemoveAll(int n, int i){
+        String new_n= Integer.toString(n);
+        String new_i=Integer.toString(i);
+        new_n=new_n.replaceAll(new_i,"");
+
+        return new_n;
+    }
+
+    public static int[] randomNumber(int k){
+      int r=(int) ((Math.random())*(Math.pow(10,k))); //Get k digit random Integer.
+      int[] digits= new int[k]; //Put each digit on a Array
+      for(int i=0,j=digits.length-1; i<k;i++,j--){
+          boolean name = digits[j]!=digits[i];
+          digits[i]=(r/(int) Math.pow(10,i))%10;
+          digits[j]=(r/(int) Math.pow(10,j))%10;
+          if(digits[i]!=digits[j]){ //If digits are not the same ıt will print but If it same array remove them.
+              System.out.print(digits[j]);
+              name=true;
+          }
+              }
+      return digits;
+          }
+          
+    public static int[] reverse(int n){
+        int temp=n,count=0;
+        while(temp!=0){
+            temp/=10;
+            count++;
+        }
+        int[] reversedigits= new int[count];
+        for(int i=0; i<=reversedigits.length; i++){
+            reversedigits[i]=(n/(int)Math.pow(10, i))%10;
+            System.out.print(reversedigits[i]);
+        }
+        return reversedigits;
+    }
+
+    public static boolean isPalindrome (int n){
+       int temp=n,sum=0,r=0;
+         while(n>0){
+         r=n%10;
+         sum=(sum*10)+r;
+         n=n/10;
+         }
+         boolean symmetric=true;
+          if(temp==sum) {
+            symmetric=true;
+            System.out.println("This is a palindrome number ");  }
+          else {
+            symmetric=false;
+            System.out.println("This is not a palindrome number");  }
+        return symmetric;
+}
+
+    public static int charDigitSum(String str){
+        int sum=0;
+        char [] ch=str.toCharArray();
+        for(int i=0;i<ch.length;i++){
+            sum+=ch[i];
+    }
+       return sum;
+    }
+
+
+    }
