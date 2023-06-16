@@ -1,0 +1,346 @@
+import java.lang.Comparable;
+import java.util.NoSuchElementException;
+
+public class AVLTree<Item> {
+    public Node<Item> root;
+
+
+    int height(Node d){
+        if (d==null)
+            return 0;
+        return d.height;
+    }
+    int max(int a, int b) {
+        return (a > b) ? a : b;
+    }
+
+
+    Node rightRotate(Node y) {
+        Node x = y.left;
+        Node T2 = x.right;
+
+
+        x.right = y;
+        y.left = T2;
+
+
+        y.height = max(height(y.left), height(y.right)) + 1;
+        x.height = max(height(x.left), height(x.right)) + 1;
+
+        return x;
+    }
+
+    Node leftRotate(Node x) {
+        Node y = x.right;
+        Node T2 = y.left;
+
+
+        y.left = x;
+        x.right = T2;
+
+
+        x.height = max(height(x.left), height(x.right)) + 1;
+        y.height = max(height(y.left), height(y.right)) + 1;
+
+
+        return y;
+    }
+
+    int getBalance(Node N) {
+        if (N == null)
+            return 0;
+
+        return height(N.left) - height(N.right);
+    }
+
+    Node insert(Node node,Item data, int key) {
+        if (node == null)
+            return (new Node(data,key));
+
+        if ((Integer)key < (Integer)node.key)
+            node.left = insert(node.left, data,key);
+        else if ((Integer)key > (Integer)node.key)
+            node.right = insert(node.right,data,key);
+        else
+            return node;
+
+
+        node.height = 1 + max(height(node.left), height(node.right));
+
+
+        int balance = getBalance(node);
+
+
+        if (balance > 1 && key < (Integer)node.left.key)
+            return rightRotate(node);
+
+
+        if (balance < -1 && (Integer)key > (Integer)node.right.key)
+            return leftRotate(node);
+
+
+        if (balance > 1 && (Integer)key > (Integer)node.left.key) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+
+
+        if (balance < -1 && (Integer)key < (Integer)node.right.key) {
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
+
+
+        return node;
+    }
+    public Node search(Node focus,Node data){
+        if(focus.CompareTo(data)){
+            System.out.println("Found!");
+            return focus;
+        }if(focus.key<data.key){
+            focus.right=search(focus.right,data);
+        }else if(focus.key>data.key){
+            focus.left=search(focus.left,data);
+        }else {
+            System.out.println("Couldn't find!");
+            return null;
+        }
+        return focus;
+    }
+    public Node search_2(Item data){
+        Node newNode=new Node(data);
+        return search(root,newNode);
+    }
+    public Node search_3(Node focus, Item data) {
+        if (focus == null) {
+            System.out.println("Tree is empty");
+            return null;
+        }
+        if (focus.data.equals( data)) {
+            System.out.println(focus.data);
+            return focus;
+        }
+        if (focus.left!= null){
+            return search_3(focus.left, data);}
+
+
+        if (focus.right!= null) {
+            return  search_3(focus.right, data);
+
+        }
+       return focus;
+    }
+
+
+    public Node RangeSearch(Node focus,int range_1,int range_2){
+        if(focus.key==range_1){
+            return focus;
+        } else if (focus.key<range_1) {
+            return  RangeSearch(focus.right,range_1,range_2);
+        } else if (focus.key>range_1) {
+            return RangeSearch(focus.left, range_1, range_2);
+        }
+return null;
+    }
+
+    public Node<Item> delet(Node focus,int ID) {
+        if (focus == null) {
+            return null;
+        }
+        if (ID < focus.key) {
+            focus.left = delet(focus.left, ID);
+        } else if (ID > focus.key) {
+            focus.right = delet(focus.right, ID);
+        } else {
+            if (focus.right==null){
+                return focus.left;
+            }
+            if (focus.left==null){
+                return focus.right;
+            }
+
+            Node t = focus;
+            focus = min(t.right);
+            focus.right = deletMin(t.right);
+            focus.left = t.left;
+        }
+        return focus;
+    }
+    public Node min(Node x){
+        if(root==null){
+            throw new NoSuchElementException("Is empty!");
+        }
+        if (x.left==null){
+            return x;
+        }
+        else {
+            return min(x.left);
+        }
+    }
+    public Node deletMin(Node x){
+        if(root==null){
+            throw new NoSuchElementException("Is empty!");
+        }
+        if(x.left==null){
+            return x.right;
+        }
+        x.left=deletMin(x.left);
+        return x;
+    }
+
+    void preOrder(Node node) {
+        if (node != null) {
+            System.out.print(node.key + " ");
+            preOrder(node.left);
+            preOrder(node.right);
+        }
+    }
+}
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.io.File;
+
+
+
+public class Main {
+    static Scanner scn;
+    static ArrayList<Song> data=new ArrayList<>();
+    static AVLTree Id_Tree=new AVLTree<>();
+    static AVLTree songName=new AVLTree<>();
+    static AVLTree artistName=new AVLTree<>();
+    public static void main(String[] args) throws FileNotFoundException {
+        read();
+        scn=new Scanner(System.in);
+        while(true){
+        System.out.print("------Menu------"
+        +"\n Which Operation you want to do?"
+        +"\n 1-Search"
+        +"\n 2- Delet");
+        int selection=scn.nextInt();
+        switch (selection){
+            case 1:
+                System.out.println("Which search you want to do"
+                +"\n 1-Search by name, ID or artist name"
+                +"\n 2-Search by genre"
+                +"\n 3-Search by range of ID");
+                int selection2= scn.nextInt();
+                switch (selection2){
+                    case 1:
+                        System.out.println("Which selection?" +
+                                "\n 1-By name" +
+                                "\n 2-By ID" +
+                                "\n 3-By artist name");
+                        int selection3=scn.nextInt();
+
+                        switch (selection3){
+                            case 1:
+                                System.out.println("Enter the name of the song...");
+                                String name=scn.nextLine();
+                                if(songName.search_3(songName.root,name)==null){
+                                    System.out.println("There is not any song about you just asked...");
+                                }else {
+                                    System.out.println(find(songName.search_3(songName.root,name)) +" The song you asked for...");
+                                }
+                                break;
+
+                            case 2:
+                                System.out.println("Enter the ID of the song...");
+                                int id=scn.nextInt();
+                                if(Id_Tree.search_3(Id_Tree.root,id)==null){
+                                    System.out.println("There is not any song about you just asked...");
+                                }else {
+                                    System.out.println(find(Id_Tree.search_3(Id_Tree.root,id))+" "+ "The song you asked for...");
+                                }
+                                break;
+
+                            case 3:
+                                System.out.println("Enter the artist name of the song...");
+                                String Aname=scn.nextLine();
+                                if(artistName.search_3(artistName.root,Aname)==null){
+                                    System.out.println("There is not any song about you just asked...");
+                                }else {
+                                    System.out.println(find(artistName.search_3(artistName.root,Aname))+" "+ "The song you asked for...");
+                                }
+                                break;
+                        }
+                        break;
+                    case 2:
+                        System.out.println("Enter the genre of the song...");
+                        String genre= scn.nextLine();
+                        for (int i=0;i<data.size();i++) {
+                            if (genre.equals(data.get(i).getGenre())){ ;
+                            System.out.println(data.get(i).toString());
+                            }
+                        else{
+                                System.out.println("There isn't any song...");
+                            }
+                        }
+                        break;
+                    case 3:
+                        System.out.println("Enter the range of the Id");
+                        int range_1= scn.nextInt();
+                        int range_2= scn.nextInt();
+                        int maxRange=Math.max(range_1,range_2);
+                        int minRange=Math.min(range_1,range_2);
+                        while (minRange<=maxRange){
+                            System.out.println(Id_Tree.RangeSearch(Id_Tree.root,minRange,maxRange).toString());
+                            minRange++;
+                        }
+
+                        break;
+                }
+                break;
+
+            case 2:
+                System.out.println("Enter the Id of the song you wanted to delet!");
+                int delet_1= scn.nextInt();
+                int delet_2=((delet_1%1000)-3);
+                System.out.println(Id_Tree.delet(Id_Tree.root,delet_1));
+                System.out.println(songName.delet(songName.root,delet_2));
+                System.out.println(artistName.delet(artistName.root,delet_2));
+                System.out.println("Operation of deletion is done for every AVLTree!");
+                break;
+        }
+        }
+
+    }
+    public static void read(){
+        String spc;
+        try(Scanner scn=new Scanner(new BufferedReader(new FileReader("C:\\Users\\Monster\\OneDrive\\Masaüstü\\song.txt")))) {
+            spc=";";
+            int count=0;
+            while(scn.hasNextLine()){
+                String line=scn.nextLine();
+                String[] arr=line.split(spc);
+                int index_2=Integer.parseInt(arr[2]);
+                int index_4= Integer.parseInt(arr[4]);
+
+                Song s=new Song(arr[0],arr[1],index_2,arr[3],index_4);
+                data.add(s);
+                for (int i=0;i<data.size();i++)
+                System.out.println("Song info:"+ data.get(i));
+
+                Id_Tree.root=Id_Tree.insert(Id_Tree.root,data.get(count).getId(),data.get(count).getId());
+                songName.root=songName.insert(songName.root,data.get(count).getName(),count);
+                artistName.root=artistName.insert(artistName.root,data.get(count).getArtist(),count);
+                count++;
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } ;
+
+    }
+    public static String find(Node focus){
+        if(focus.key>=0 && focus.key<=4){
+          return data.get(focus.key).toString();
+    }
+        else {
+           return  data.get(((Id_Tree.root.key %1000)-3)).toString();
+        }
+    }
+}
+
+          
